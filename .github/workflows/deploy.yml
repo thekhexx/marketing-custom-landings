@@ -1,0 +1,19 @@
+name: deploy
+on:
+  push:
+    branches: [main]
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Simulate rsync to the servers
+        run: |
+          echo "deploying $(git rev-parse --short HEAD)"
+          find . -maxdepth 2 -name index.html -not -path './.git/*' | sort
+          sleep 5
+          git rev-parse --short HEAD > healthz
+          cat healthz
